@@ -59,7 +59,7 @@ export default function counterReducer(
       };
 
     case FETCH_USER:
-      return { ...state, todos: { ...state.todos, loading: true } };
+      return { ...state, users: { ...state.users, loading: true } };
     case `${FETCH_USER}_SUCCESS`:
       return {
         ...state,
