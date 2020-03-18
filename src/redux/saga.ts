@@ -1,5 +1,10 @@
 import { call, put, takeLatest, all } from "redux-saga/effects";
-import { FETCH_TODO, FETCH_POST, APIRequest } from "./counterReducer";
+import {
+  FETCH_TODO,
+  FETCH_POST,
+  APIRequest,
+  FETCH_USER
+} from "./counterReducer";
 import axios from "axios";
 
 const BASE_URL = "https://jsonplaceholder.typicode.com";
@@ -14,7 +19,7 @@ async function getAPI(action: APIRequest) {
   });
 }
 
-function* getTasks(action: any) {
+function* getResource(action: any) {
   try {
     const data = yield call(getAPI, action);
     yield put({ type: `${action.type}_SUCCESS`, data: data.data });
@@ -25,7 +30,8 @@ function* getTasks(action: any) {
 
 export default function* sagas() {
   yield all([
-    takeLatest(FETCH_TODO, getTasks),
-    takeLatest(FETCH_POST, getTasks)
+    takeLatest(FETCH_TODO, getResource),
+    takeLatest(FETCH_POST, getResource),
+    takeLatest(FETCH_USER, getResource)
   ]);
 }

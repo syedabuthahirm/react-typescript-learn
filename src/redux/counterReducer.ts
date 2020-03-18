@@ -1,10 +1,12 @@
 export const FETCH_POST = "FETCH_POST";
 export const FETCH_TODO = "FETCH_TODO";
+export const FETCH_USER = "FETCH_USER";
 
 interface CounterState {
   counter: number;
   posts: PostAPIResponse;
   todos: TodoAPIResponse;
+  users: UserAPIResponse;
 }
 
 const initialState: CounterState = {
@@ -15,6 +17,11 @@ const initialState: CounterState = {
     data: []
   },
   todos: {
+    loading: false,
+    error: null,
+    data: []
+  },
+  users: {
     loading: false,
     error: null,
     data: []
@@ -50,6 +57,19 @@ export default function counterReducer(
         ...state,
         todos: { ...state.todos, loading: false, error: "Server Error" }
       };
+
+    case FETCH_USER:
+      return { ...state, todos: { ...state.todos, loading: true } };
+    case `${FETCH_USER}_SUCCESS`:
+      return {
+        ...state,
+        users: { ...state.users, loading: false, data: action.data }
+      };
+    case `${FETCH_USER}_FAIL`:
+      return {
+        ...state,
+        users: { ...state.users, loading: false, error: "Server Error" }
+      };
     default:
       return state;
   }
@@ -65,6 +85,13 @@ export function requestPosts(urlPath: string) {
 export function requestTodos(urlPath: string) {
   return {
     type: FETCH_TODO,
+    urlPath
+  };
+}
+
+export function requestUsers(urlPath: string) {
+  return {
+    type: FETCH_USER,
     urlPath
   };
 }
@@ -88,6 +115,10 @@ interface TodoAPIResponse extends APIResponse {
   data: Todo[];
 }
 
+interface UserAPIResponse extends APIResponse {
+  data: User[];
+}
+
 interface Post {
   userId: number;
   id: number;
@@ -100,4 +131,28 @@ interface Todo {
   id: number;
   title: string;
   completed: boolean;
+}
+
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  address: {
+    street: string;
+    suite: string;
+    city: string;
+    zipcode: string;
+    geo: {
+      lat: string;
+      lng: string;
+    };
+  };
+  phone: string;
+  website: string;
+  company: {
+    name: string;
+    catchPhrase: string;
+    bs: string;
+  };
 }
